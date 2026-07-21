@@ -11,6 +11,8 @@ const prefixes = {
   pty: "pty",
   tool: "tool",
   workspace: "wrk",
+  scheduledTask: "tsk",
+  scheduledRun: "run",
 } as const
 
 const LENGTH = 26

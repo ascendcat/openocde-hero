@@ -945,6 +945,17 @@ export default function LegacyLayout(props: ParentProps) {
         onSelect: () => openSettings(),
       },
       {
+        id: "scheduledTask.open",
+        title: "打开定时任务",
+        category: language.t("command.category.project"),
+        disabled: !currentDir(),
+        onSelect: () => {
+          const directory = currentDir()
+          if (!directory) return
+          navigateWithSidebarReset(`/${base64Encode(directory)}/scheduled-tasks`)
+        },
+      },
+      {
         id: "session.previous",
         title: language.t("command.session.previous"),
         category: language.t("command.category.session"),
@@ -2056,6 +2067,15 @@ export default function LegacyLayout(props: ParentProps) {
                           <DropdownMenu.ItemLabel>{language.t("common.edit")}</DropdownMenu.ItemLabel>
                         </DropdownMenu.Item>
                         <DropdownMenu.Item
+                          onSelect={() => {
+                            const dir = worktree()
+                            if (!dir) return
+                            navigateWithSidebarReset(`/${base64Encode(dir)}/scheduled-tasks`)
+                          }}
+                        >
+                          <DropdownMenu.ItemLabel>定时任务</DropdownMenu.ItemLabel>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item
                           data-action="project-workspaces-toggle"
                           data-project={slug()}
                           disabled={!canToggle()}
@@ -2114,6 +2134,19 @@ export default function LegacyLayout(props: ParentProps) {
                         >
                           <IconV2 name="edit" size="small" />
                           {language.t("command.session.new")}
+                        </Button>
+                        <Button
+                          size="large"
+                          variant="ghost"
+                          class="w-full mt-2"
+                          onClick={() => {
+                            const dir = worktree()
+                            if (!dir) return
+                            navigateWithSidebarReset(`/${base64Encode(dir)}/scheduled-tasks`)
+                          }}
+                        >
+                          <span aria-hidden="true">◷</span>
+                          定时任务
                         </Button>
                       </div>
                       <div class="flex-1 min-h-0">

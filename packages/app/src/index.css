@@ -25,6 +25,144 @@
 }
 
 @layer components {
+  .oc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-weak);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .oc-field input,
+  .oc-field select,
+  .oc-field textarea {
+    width: 100%;
+    border: 1px solid var(--border-weak-base);
+    border-radius: 6px;
+    background: var(--background-stronger);
+    color: var(--text-strong);
+    font-size: 12px;
+    font-weight: 400;
+    outline: none;
+  }
+
+  .oc-field input,
+  .oc-field select {
+    height: 36px;
+    padding: 0 10px;
+  }
+
+  .oc-field select {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--text-weak) 50%),
+      linear-gradient(135deg, var(--text-weak) 50%, transparent 50%);
+    background-position:
+      calc(100% - 16px) 50%,
+      calc(100% - 11px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 30px;
+    cursor: pointer;
+  }
+
+  .oc-field select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .oc-field textarea {
+    padding: 10px;
+    line-height: 1.55;
+    resize: vertical;
+  }
+
+  .oc-field input:focus,
+  .oc-field select:focus,
+  .oc-field textarea:focus {
+    border-color: var(--border-strong-base);
+  }
+
+  .oc-chip {
+    min-height: 26px;
+    padding: 0 9px;
+    border: 1px solid var(--border-weak-base);
+    border-radius: 6px;
+    color: var(--text-weak);
+    font-size: 10px;
+  }
+
+  .oc-chip:hover,
+  .oc-chip.active {
+    border-color: var(--border-strong-base);
+    color: var(--text-strong);
+    background: var(--surface-base-hover);
+  }
+
+  .oc-toggle-card {
+    min-height: 64px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border: 1px solid var(--border-weak-base);
+    border-radius: 8px;
+  }
+
+  .oc-toggle-card div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .oc-toggle-card strong {
+    color: var(--text-strong);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .oc-toggle-card span {
+    color: var(--text-weak);
+    font-size: 9px;
+  }
+
+  .oc-toggle-card input {
+    accent-color: var(--icon-success-base);
+  }
+
+  .oc-button-primary,
+  .oc-button-secondary,
+  .oc-button-danger {
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .oc-button-primary {
+    background: var(--button-primary-base);
+    color: var(--icon-invert-base);
+  }
+
+  .oc-button-secondary {
+    border: 1px solid var(--border-weak-base);
+    color: var(--text-strong);
+  }
+
+  .oc-button-danger {
+    border: 1px solid var(--border-critical-base);
+    color: var(--text-on-critical-base);
+  }
+
+  .oc-button-primary:disabled {
+    opacity: 0.5;
+  }
+}
+
+@layer components {
   [data-component="getting-started"] {
     container-type: inline-size;
     container-name: getting-started;

@@ -2597,6 +2597,44 @@ export type SessionBusyError = {
   message: string
 }
 
+export type ScheduledTask = {
+  id: ScheduledTaskId
+  projectID: string
+  directory: string
+  name: string
+  prompt: string
+  cron: string
+  timezone: string
+  enabled: boolean
+  agent: string
+  model: {
+    providerID: string
+    modelID: string
+    variant?: string
+  }
+  autoApprove: boolean
+  nextRunAt: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+  lastRunAt: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+  lastRunStatus: "success" | "failed"
+  time: {
+    created: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+    updated: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+  }
+}
+
+export type ScheduledRun = {
+  id: ScheduledRunId
+  taskID: ScheduledTaskId
+  sessionID: string
+  trigger: "schedule" | "manual"
+  status: "running" | "success" | "failed"
+  time: {
+    started: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+    finished: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+  }
+  error: string
+}
+
 export type EventTuiPromptAppend = {
   type: "tui.prompt.append"
   properties: {
@@ -3849,6 +3887,10 @@ export type PtyTicketConnectToken = {
   ticket: string
   expires_in: number
 }
+
+export type ScheduledTaskId = string
+
+export type ScheduledRunId = string
 
 export type WorkspaceEventConnectionStatus = {
   workspaceID: string
@@ -10471,6 +10513,292 @@ export type PartUpdateResponses = {
 }
 
 export type PartUpdateResponse = PartUpdateResponses[keyof PartUpdateResponses]
+
+export type ScheduledTaskListData = {
+  body?: never
+  path?: never
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task"
+}
+
+export type ScheduledTaskListErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type ScheduledTaskListError = ScheduledTaskListErrors[keyof ScheduledTaskListErrors]
+
+export type ScheduledTaskListResponses = {
+  /**
+   * Scheduled tasks for the current project
+   */
+  200: Array<ScheduledTask>
+}
+
+export type ScheduledTaskListResponse = ScheduledTaskListResponses[keyof ScheduledTaskListResponses]
+
+export type ScheduledTaskCreateData = {
+  body?: {
+    name: string
+    prompt: string
+    cron: string
+    timezone: string
+    enabled: boolean
+    agent?: string
+    model?: {
+      providerID: string
+      modelID: string
+      variant?: string
+    }
+    autoApprove: boolean
+  }
+  path?: never
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task"
+}
+
+export type ScheduledTaskCreateErrors = {
+  /**
+   * BadRequest | InvalidRequestError
+   */
+  400: EffectHttpApiErrorBadRequest | InvalidRequestError
+}
+
+export type ScheduledTaskCreateError = ScheduledTaskCreateErrors[keyof ScheduledTaskCreateErrors]
+
+export type ScheduledTaskCreateResponses = {
+  /**
+   * Created scheduled task
+   */
+  200: ScheduledTask
+}
+
+export type ScheduledTaskCreateResponse = ScheduledTaskCreateResponses[keyof ScheduledTaskCreateResponses]
+
+export type ScheduledTaskRemoveData = {
+  body?: never
+  path: {
+    taskID: ScheduledTaskId
+  }
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task/{taskID}"
+}
+
+export type ScheduledTaskRemoveErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type ScheduledTaskRemoveError = ScheduledTaskRemoveErrors[keyof ScheduledTaskRemoveErrors]
+
+export type ScheduledTaskRemoveResponses = {
+  /**
+   * <No Content>
+   */
+  200: unknown
+}
+
+export type ScheduledTaskGetData = {
+  body?: never
+  path: {
+    taskID: ScheduledTaskId
+  }
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task/{taskID}"
+}
+
+export type ScheduledTaskGetErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type ScheduledTaskGetError = ScheduledTaskGetErrors[keyof ScheduledTaskGetErrors]
+
+export type ScheduledTaskGetResponses = {
+  /**
+   * Scheduled task
+   */
+  200: ScheduledTask
+}
+
+export type ScheduledTaskGetResponse = ScheduledTaskGetResponses[keyof ScheduledTaskGetResponses]
+
+export type ScheduledTaskUpdateData = {
+  body?: {
+    name?: string
+    prompt?: string
+    cron?: string
+    timezone?: string
+    enabled?: boolean
+    agent?: string
+    model?: {
+      providerID: string
+      modelID: string
+      variant?: string
+    }
+    clearAgent?: boolean
+    clearModel?: boolean
+    autoApprove?: boolean
+  }
+  path: {
+    taskID: ScheduledTaskId
+  }
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task/{taskID}"
+}
+
+export type ScheduledTaskUpdateErrors = {
+  /**
+   * BadRequest | InvalidRequestError
+   */
+  400: EffectHttpApiErrorBadRequest | InvalidRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type ScheduledTaskUpdateError = ScheduledTaskUpdateErrors[keyof ScheduledTaskUpdateErrors]
+
+export type ScheduledTaskUpdateResponses = {
+  /**
+   * Updated scheduled task
+   */
+  200: ScheduledTask
+}
+
+export type ScheduledTaskUpdateResponse = ScheduledTaskUpdateResponses[keyof ScheduledTaskUpdateResponses]
+
+export type ScheduledTaskRunsData = {
+  body?: never
+  path: {
+    taskID: ScheduledTaskId
+  }
+  query?: {
+    directory?: string
+    workspace?: string
+    limit?: string
+  }
+  url: "/scheduled-task/{taskID}/run"
+}
+
+export type ScheduledTaskRunsErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type ScheduledTaskRunsError = ScheduledTaskRunsErrors[keyof ScheduledTaskRunsErrors]
+
+export type ScheduledTaskRunsResponses = {
+  /**
+   * Scheduled task runs
+   */
+  200: Array<ScheduledRun>
+}
+
+export type ScheduledTaskRunsResponse = ScheduledTaskRunsResponses[keyof ScheduledTaskRunsResponses]
+
+export type ScheduledTaskRunData = {
+  body?: never
+  path: {
+    taskID: ScheduledTaskId
+  }
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task/{taskID}/run"
+}
+
+export type ScheduledTaskRunErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+  /**
+   * Not found
+   */
+  404: NotFoundError
+}
+
+export type ScheduledTaskRunError = ScheduledTaskRunErrors[keyof ScheduledTaskRunErrors]
+
+export type ScheduledTaskRunResponses = {
+  /**
+   * Dispatched scheduled run
+   */
+  200: ScheduledRun
+}
+
+export type ScheduledTaskRunResponse = ScheduledTaskRunResponses[keyof ScheduledTaskRunResponses]
+
+export type ScheduledTaskValidateData = {
+  body?: {
+    cron: string
+    timezone: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/scheduled-task/validate"
+}
+
+export type ScheduledTaskValidateErrors = {
+  /**
+   * BadRequest | InvalidRequestError
+   */
+  400: EffectHttpApiErrorBadRequest | InvalidRequestError
+}
+
+export type ScheduledTaskValidateError = ScheduledTaskValidateErrors[keyof ScheduledTaskValidateErrors]
+
+export type ScheduledTaskValidateResponses = {
+  /**
+   * Success
+   */
+  200: {
+    nextRunAt: number | "NaN" | "Infinity" | "-Infinity" | "Infinity" | "-Infinity" | "NaN"
+  }
+}
+
+export type ScheduledTaskValidateResponse = ScheduledTaskValidateResponses[keyof ScheduledTaskValidateResponses]
 
 export type SyncStartData = {
   body?: never

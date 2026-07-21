@@ -28,6 +28,7 @@ import { tabKey, useTabs } from "@/context/tabs"
 import type { PromptSession } from "@/context/prompt"
 import "./titlebar.css"
 import { newTabTooltipKeybind } from "./command-tooltip-keybind"
+import { base64Encode } from "@opencode-ai/core/util/encode"
 
 type TauriDesktopWindow = {
   startDragging?: () => Promise<void>
@@ -486,6 +487,28 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
                     onClick={toggleHome}
                     aria-label={language.t("home.title")}
                     aria-pressed={layout.route().type === "home"}
+                  />
+                </TooltipV2>
+                <TooltipV2 placement="bottom" value="定时任务" class="shrink-0">
+                  <IconButtonV2
+                    type="button"
+                    variant="ghost-muted"
+                    size="large"
+                    class="!w-9 shrink-0"
+                    icon={<IconV2 name="status" />}
+                    state={location.pathname.endsWith("/scheduled-tasks") ? "pressed" : undefined}
+                    onClick={() => {
+                      if (params.dir) {
+                        navigate(`/${params.dir}/scheduled-tasks`)
+                        return
+                      }
+                      const selected = layout.home.selection().directory
+                      const directory = selected || layout.projects.list()[0]?.worktree
+                      if (!directory) return
+                      navigate(`/${base64Encode(directory)}/scheduled-tasks`)
+                    }}
+                    aria-label="定时任务"
+                    aria-pressed={location.pathname.endsWith("/scheduled-tasks")}
                   />
                 </TooltipV2>
 

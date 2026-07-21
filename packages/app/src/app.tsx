@@ -65,11 +65,13 @@ import { ErrorPage } from "./pages/error"
 import { useCheckServerHealth } from "./utils/server-health"
 import { legacySessionHref, legacySessionServer, requireServerKey, sessionHref } from "./utils/session-route"
 import { createSessionLineage } from "@/pages/session/session-lineage"
+import { decode64 } from "@/utils/base64"
 
 import { SessionPage, SessionRouteErrorBoundary, TargetSessionRouteContent } from "@/pages/session"
 import { NewHome, LegacyHome } from "@/pages/home"
 
 const NewSession = lazy(() => import("@/pages/new-session"))
+const ScheduledTasks = lazy(() => import("@/pages/scheduled-tasks"))
 
 const SessionRoute = () => {
   const settings = useSettings()
@@ -171,6 +173,22 @@ function SelectedServerProviders(props: ParentProps) {
         <ServerSyncProvider>{props.children}</ServerSyncProvider>
       </ServerSDKProvider>
     </ServerKey>
+  )
+}
+
+function ScheduledTaskRoute() {
+  const params = useParams<{ dir: string }>()
+  const directory = createMemo(() => decode64(params.dir))
+  return (
+    <SelectedServerProviders>
+      <Show when={directory()} keyed>
+        {(value) => (
+          <SDKProvider directory={value}>
+            <ScheduledTasks />
+          </SDKProvider>
+        )}
+      </Show>
+    </SelectedServerProviders>
   )
 }
 
@@ -602,6 +620,7 @@ function Routes(props: { serverScoped?: JSX.Element }) {
           <Route path="/session/:id?" component={SessionRoute} />
         </Route>
       </Route>
+      <Route path="/:dir/scheduled-tasks" component={ScheduledTaskRoute} />
       <Show when={settings.general.newLayoutDesigns()}>
         <Route path="/" component={NewHome} />
         <Route path="/:dir/session/:id" component={NewLayoutLegacySessionRedirect} />

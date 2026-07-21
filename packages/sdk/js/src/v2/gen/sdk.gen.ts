@@ -175,6 +175,23 @@ import type {
   QuestionReplyErrors,
   QuestionReplyResponses,
   QuestionV2Reply,
+  ScheduledTaskCreateErrors,
+  ScheduledTaskCreateResponses,
+  ScheduledTaskGetErrors,
+  ScheduledTaskGetResponses,
+  ScheduledTaskId,
+  ScheduledTaskListErrors,
+  ScheduledTaskListResponses,
+  ScheduledTaskRemoveErrors,
+  ScheduledTaskRemoveResponses,
+  ScheduledTaskRunErrors,
+  ScheduledTaskRunResponses,
+  ScheduledTaskRunsErrors,
+  ScheduledTaskRunsResponses,
+  ScheduledTaskUpdateErrors,
+  ScheduledTaskUpdateResponses,
+  ScheduledTaskValidateErrors,
+  ScheduledTaskValidateResponses,
   SessionAbortErrors,
   SessionAbortResponses,
   SessionChildrenErrors,
@@ -4404,6 +4421,337 @@ export class Part extends HeyApiClient {
   }
 }
 
+export class ScheduledTask extends HeyApiClient {
+  /**
+   * List scheduled tasks
+   *
+   * List all recurring OpenCode tasks for the current project.
+   */
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+      workspace?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<ScheduledTaskListResponses, ScheduledTaskListErrors, ThrowOnError>({
+      url: "/scheduled-task",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Create scheduled task
+   *
+   * Create a recurring task that starts a new OpenCode session on schedule.
+   */
+  public create<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+      workspace?: string
+      name?: string
+      prompt?: string
+      cron?: string
+      timezone?: string
+      enabled?: boolean
+      agent?: string
+      model?: {
+        providerID: string
+        modelID: string
+        variant?: string
+      }
+      autoApprove?: boolean
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+            { in: "body", key: "name" },
+            { in: "body", key: "prompt" },
+            { in: "body", key: "cron" },
+            { in: "body", key: "timezone" },
+            { in: "body", key: "enabled" },
+            { in: "body", key: "agent" },
+            { in: "body", key: "model" },
+            { in: "body", key: "autoApprove" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<ScheduledTaskCreateResponses, ScheduledTaskCreateErrors, ThrowOnError>(
+      {
+        url: "/scheduled-task",
+        ...options,
+        ...params,
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+          ...params.headers,
+        },
+      },
+    )
+  }
+
+  /**
+   * Delete scheduled task
+   *
+   * Permanently delete a scheduled task and its run history.
+   */
+  public remove<ThrowOnError extends boolean = false>(
+    parameters: {
+      taskID: ScheduledTaskId
+      directory?: string
+      workspace?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "taskID" },
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).delete<
+      ScheduledTaskRemoveResponses,
+      ScheduledTaskRemoveErrors,
+      ThrowOnError
+    >({
+      url: "/scheduled-task/{taskID}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Get scheduled task
+   *
+   * Get one scheduled task by ID.
+   */
+  public get<ThrowOnError extends boolean = false>(
+    parameters: {
+      taskID: ScheduledTaskId
+      directory?: string
+      workspace?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "taskID" },
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<ScheduledTaskGetResponses, ScheduledTaskGetErrors, ThrowOnError>({
+      url: "/scheduled-task/{taskID}",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Update scheduled task
+   *
+   * Update schedule, prompt, execution options, or enabled state.
+   */
+  public update<ThrowOnError extends boolean = false>(
+    parameters: {
+      taskID: ScheduledTaskId
+      directory?: string
+      workspace?: string
+      name?: string
+      prompt?: string
+      cron?: string
+      timezone?: string
+      enabled?: boolean
+      agent?: string
+      model?: {
+        providerID: string
+        modelID: string
+        variant?: string
+      }
+      clearAgent?: boolean
+      clearModel?: boolean
+      autoApprove?: boolean
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "taskID" },
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+            { in: "body", key: "name" },
+            { in: "body", key: "prompt" },
+            { in: "body", key: "cron" },
+            { in: "body", key: "timezone" },
+            { in: "body", key: "enabled" },
+            { in: "body", key: "agent" },
+            { in: "body", key: "model" },
+            { in: "body", key: "clearAgent" },
+            { in: "body", key: "clearModel" },
+            { in: "body", key: "autoApprove" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).patch<
+      ScheduledTaskUpdateResponses,
+      ScheduledTaskUpdateErrors,
+      ThrowOnError
+    >({
+      url: "/scheduled-task/{taskID}",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+
+  /**
+   * List scheduled task runs
+   *
+   * List recent execution attempts for a scheduled task.
+   */
+  public runs<ThrowOnError extends boolean = false>(
+    parameters: {
+      taskID: ScheduledTaskId
+      directory?: string
+      workspace?: string
+      limit?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "taskID" },
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+            { in: "query", key: "limit" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).get<ScheduledTaskRunsResponses, ScheduledTaskRunsErrors, ThrowOnError>({
+      url: "/scheduled-task/{taskID}/run",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Run scheduled task now
+   *
+   * Immediately dispatch a scheduled task into a new OpenCode session.
+   */
+  public run<ThrowOnError extends boolean = false>(
+    parameters: {
+      taskID: ScheduledTaskId
+      directory?: string
+      workspace?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "taskID" },
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<ScheduledTaskRunResponses, ScheduledTaskRunErrors, ThrowOnError>({
+      url: "/scheduled-task/{taskID}/run",
+      ...options,
+      ...params,
+    })
+  }
+
+  /**
+   * Validate schedule
+   *
+   * Validate a cron expression and calculate its next run time.
+   */
+  public validate<ThrowOnError extends boolean = false>(
+    parameters?: {
+      directory?: string
+      workspace?: string
+      cron?: string
+      timezone?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "directory" },
+            { in: "query", key: "workspace" },
+            { in: "body", key: "cron" },
+            { in: "body", key: "timezone" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<
+      ScheduledTaskValidateResponses,
+      ScheduledTaskValidateErrors,
+      ThrowOnError
+    >({
+      url: "/scheduled-task/validate",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+}
+
 export class History extends HeyApiClient {
   /**
    * List sync events
@@ -7200,6 +7548,11 @@ export class OpencodeClient extends HeyApiClient {
   private _part?: Part
   get part(): Part {
     return (this._part ??= new Part({ client: this.client }))
+  }
+
+  private _scheduledTask?: ScheduledTask
+  get scheduledTask(): ScheduledTask {
+    return (this._scheduledTask ??= new ScheduledTask({ client: this.client }))
   }
 
   private _sync?: Sync
