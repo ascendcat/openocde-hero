@@ -6,14 +6,10 @@ import type { Agent } from "../agent/agent"
 import { FSUtil } from "@opencode-ai/core/fs-util"
 import { evaluate } from "@/permission/evaluate"
 import { Config } from "@/config/config"
-import { Identifier } from "../id/id"
 import { ToolID } from "./schema"
 import { TRUNCATION_DIR } from "./truncation-dir"
 
 const RETENTION = Duration.days(7)
-// Ascending IDs encode milliseconds in 36 bits (the remaining 12 bits are a
-// per-millisecond counter), so their decoded timestamps wrap about every 795 days.
-const TIMESTAMP_PERIOD = 2 ** 36
 
 export const MAX_LINES = 2000
 export const MAX_BYTES = 50 * 1024
@@ -55,15 +51,17 @@ const layer = Layer.effect(
     const fs = yield* FSUtil.Service
 
     const cleanup = Effect.fn("Truncate.cleanup")(function* () {
-      const now = Identifier.timestamp(Identifier.create("tool", "ascending"))
+      const cutoff = Date.now() - Duration.toMillis(RETENTION)
       const entries = yield* fs.readDirectory(TRUNCATION_DIR).pipe(
         Effect.map((all) => all.filter((name) => name.startsWith("tool_"))),
         Effect.catch(() => Effect.succeed([])),
       )
       for (const entry of entries) {
-        const age = (now - Identifier.timestamp(entry) + TIMESTAMP_PERIOD) % TIMESTAMP_PERIOD
-        if (age <= Duration.toMillis(RETENTION)) continue
-        yield* fs.remove(path.join(TRUNCATION_DIR, entry)).pipe(Effect.catch(() => Effect.void))
+        const file = path.join(TRUNCATION_DIR, entry)
+        const info = yield* fs.stat(file).pipe(Effect.catch(() => Effect.succeed(undefined)))
+        const mtime = info && Option.getOrUndefined(info.mtime)
+        if (!mtime || mtime.getTime() >= cutoff) continue
+        yield* fs.remove(file).pipe(Effect.catch(() => Effect.void))
       }
     })
 
