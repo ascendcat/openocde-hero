@@ -115,6 +115,28 @@ const scenarios: Scenario[] = [
       },
       "status",
     ),
+  http.protected.get("/web-ui", "webui.status").global().json(200, (body) => {
+    object(body)
+    check(body.running === false, "web UI should be stopped before the listener exercise")
+    array(body.urls)
+    check(body.connectionCount === 0, "stopped web UI should have no connections")
+  }),
+  http.protected.get("/web-ui/connections", "webui.connections").global().json(200, array),
+  http.protected
+    .post("/web-ui/start", "webui.start")
+    .global()
+    .probe({ path: "/web-ui/start", body: { port: -1 } })
+    .at(() => ({ path: "/web-ui/start", body: { hostname: "127.0.0.1", port: 0, mdns: false } }))
+    .json(200, (body) => {
+      object(body)
+      check(body.running === true, "web UI start should report a running listener")
+      check(typeof body.port === "number" && body.port > 0, "web UI start should report its assigned port")
+      array(body.urls)
+    }),
+  http.protected.post("/web-ui/stop", "webui.stop").global().json(200, (body) => {
+    object(body)
+    check(body.running === false, "web UI stop should report a stopped listener")
+  }),
   http.protected.get("/path", "path.get").json(200, (body, ctx) => {
     object(body)
     check(body.directory === ctx.directory, "directory should resolve from x-opencode-directory")
@@ -162,6 +184,108 @@ const scenarios: Scenario[] = [
     .at((ctx) => ({ path: "/config", headers: ctx.headers(), body: { username: 1 } }))
     .status(400),
   http.protected.get("/config/providers", "config.providers").json(),
+  http.protected
+    .get("/scheduled-task", "scheduledTask.list")
+    .seeded((ctx) => ctx.scheduledTask())
+    .json(200, (body, ctx) => {
+      array(body)
+      check(body.some((task) => isRecord(task) && task.id === ctx.state.id), "scheduled task list should include seed")
+    }),
+  http.protected
+    .get("/scheduled-task/{taskID}", "scheduledTask.get")
+    .seeded((ctx) => ctx.scheduledTask())
+    .at((ctx) => ({
+      path: route("/scheduled-task/{taskID}", { taskID: ctx.state.id }),
+      headers: ctx.headers(),
+    }))
+    .json(200, (body, ctx) => {
+      object(body)
+      check(body.id === ctx.state.id, "scheduled task get should return the requested task")
+    }),
+  http.protected
+    .post("/scheduled-task", "scheduledTask.create")
+    .mutating()
+    .at((ctx) => ({
+      path: "/scheduled-task",
+      headers: ctx.headers(),
+      body: {
+        name: "Created by HTTP API exerciser",
+        prompt: "Exercise scheduled task creation",
+        cron: "0 9 * * 1-5",
+        timezone: "UTC",
+        enabled: false,
+        autoApprove: false,
+      },
+    }))
+    .json(200, (body) => {
+      object(body)
+      check(typeof body.id === "string" && body.id.startsWith("tsk_"), "scheduled task create should return an ID")
+      check(body.name === "Created by HTTP API exerciser", "scheduled task create should preserve the name")
+    }),
+  http.protected
+    .patch("/scheduled-task/{taskID}", "scheduledTask.update")
+    .mutating()
+    .seeded((ctx) => ctx.scheduledTask())
+    .at((ctx) => ({
+      path: route("/scheduled-task/{taskID}", { taskID: ctx.state.id }),
+      headers: ctx.headers(),
+      body: { name: "Updated by HTTP API exerciser", enabled: false },
+    }))
+    .json(200, (body, ctx) => {
+      object(body)
+      check(body.id === ctx.state.id, "scheduled task update should return the requested task")
+      check(body.name === "Updated by HTTP API exerciser", "scheduled task update should preserve changes")
+    }),
+  http.protected
+    .delete("/scheduled-task/{taskID}", "scheduledTask.remove")
+    .mutating()
+    .seeded((ctx) => ctx.scheduledTask())
+    .at((ctx) => ({
+      path: route("/scheduled-task/{taskID}", { taskID: ctx.state.id }),
+      headers: ctx.headers(),
+    }))
+    .status(200),
+  http.protected
+    .post("/scheduled-task/{taskID}/run", "scheduledTask.run")
+    .withLlm()
+    .mutating()
+    .seeded((ctx) =>
+      Effect.gen(function* () {
+        yield* ctx.llmText("scheduled task completed")
+        return yield* ctx.scheduledTask()
+      }),
+    )
+    .at((ctx) => ({
+      path: route("/scheduled-task/{taskID}/run", { taskID: ctx.state.id }),
+      headers: ctx.headers(),
+    }))
+    .jsonEffect(200, (body, ctx) =>
+      Effect.gen(function* () {
+        object(body)
+        check(body.taskID === ctx.state.id, "scheduled run should reference the requested task")
+        check(body.trigger === "manual", "scheduled run should record the manual trigger")
+        yield* ctx.llmWait(1)
+      }),
+    ),
+  http.protected
+    .get("/scheduled-task/{taskID}/run", "scheduledTask.runs")
+    .seeded((ctx) => ctx.scheduledTask())
+    .at((ctx) => ({
+      path: `${route("/scheduled-task/{taskID}/run", { taskID: ctx.state.id })}?limit=10`,
+      headers: ctx.headers(),
+    }))
+    .json(200, array),
+  http.protected
+    .post("/scheduled-task/validate", "scheduledTask.validate")
+    .at((ctx) => ({
+      path: "/scheduled-task/validate",
+      headers: ctx.headers(),
+      body: { cron: "0 9 * * 1-5", timezone: "UTC" },
+    }))
+    .json(200, (body) => {
+      object(body)
+      check(typeof body.nextRunAt === "number" && body.nextRunAt > Date.now(), "cron validation should return next run")
+    }),
   http.protected.get("/project", "project.list").json(200, array, "status"),
   http.protected.get("/project/current", "project.current").json(
     200,

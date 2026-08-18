@@ -144,6 +144,20 @@ function withContext<A, E>(
               if (!instance) throw new Error("scenario needs a project directory")
               return instance.project
             }),
+          scheduledTask: (input) =>
+            run(
+              modules.ScheduledTask.Service.use((svc) =>
+                svc.create({
+                  name: "HTTP API scheduled task",
+                  prompt: "Exercise the scheduled task API",
+                  cron: "0 9 * * 1-5",
+                  timezone: "UTC",
+                  enabled: false,
+                  autoApprove: false,
+                  ...input,
+                }),
+              ),
+            ).pipe(Effect.orDie),
           message: (sessionID, input) =>
             Effect.gen(function* () {
               const info: SessionV1.User = {
