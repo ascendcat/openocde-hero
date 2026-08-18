@@ -534,7 +534,11 @@ export const cliIt = {
     body: (input: CliFixture) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
     opts?: number | TestOptions,
   ) =>
-    (process.platform === "win32" ? test : test.concurrent)(
+    // Each case boots a real CLI process. Running the whole group concurrently
+    // can starve public CI runners badly enough that healthy commands hit the
+    // subprocess deadline. Keep fast local parallelism, but serialize on CI
+    // and Windows where process startup is the limiting resource.
+    (process.platform === "win32" || process.env.CI ? test : test.concurrent)(
       name,
       () => Effect.runPromise(Effect.scoped(withCliFixture(body))),
       opts,
