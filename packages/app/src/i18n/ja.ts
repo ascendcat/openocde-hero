@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "OpenAI 互換のカスタムプロバイダー",
+  "dialog.model.unpaid.viewMoreProviders": "さらに 70 以上のプロバイダーを表示",
+  "session.header.reveal.finder": "Finder で表示",
+  "session.header.reveal.fileExplorer": "エクスプローラーで表示",
+  "session.header.reveal.containingFolder": "格納フォルダーを開く",
   "command.category.suggested": "おすすめ",
   "command.category.view": "表示",
   "command.category.project": "プロジェクト",

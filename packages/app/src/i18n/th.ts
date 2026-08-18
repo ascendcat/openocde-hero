@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "ผู้ให้บริการแบบกำหนดเองที่เข้ากันได้กับ OpenAI",
+  "dialog.model.unpaid.viewMoreProviders": "ดูผู้ให้บริการเพิ่มเติมกว่า 70 ราย",
+  "session.header.reveal.finder": "แสดงใน Finder",
+  "session.header.reveal.fileExplorer": "แสดงใน File Explorer",
+  "session.header.reveal.containingFolder": "เปิดโฟลเดอร์ที่มีไฟล์นี้",
   "command.category.suggested": "แนะนำ",
   "command.category.view": "มุมมอง",
   "command.category.project": "โปรเจกต์",

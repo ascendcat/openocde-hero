@@ -3,6 +3,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "dialog.provider.custom.label": "Özel OpenAI uyumlu sağlayıcı",
+  "dialog.model.unpaid.viewMoreProviders": "70'ten fazla sağlayıcı daha gör",
+  "session.header.reveal.finder": "Finder'da göster",
+  "session.header.reveal.fileExplorer": "Dosya Gezgini'nde göster",
+  "session.header.reveal.containingFolder": "İçeren klasörü aç",
   "command.category.suggested": "Önerilen",
   "command.category.view": "Görünüm",
   "command.category.project": "Proje",

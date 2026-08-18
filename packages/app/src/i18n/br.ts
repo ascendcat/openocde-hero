@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "Provedor personalizado compatível com OpenAI",
+  "dialog.model.unpaid.viewMoreProviders": "Ver mais de 70 provedores",
+  "session.header.reveal.finder": "Mostrar no Finder",
+  "session.header.reveal.fileExplorer": "Mostrar no Explorador de Arquivos",
+  "session.header.reveal.containingFolder": "Abrir pasta que contém o arquivo",
   "command.category.suggested": "Sugerido",
   "command.category.view": "Visualizar",
   "command.category.project": "Projeto",

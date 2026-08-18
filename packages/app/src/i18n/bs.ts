@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "Prilagođeni pružalac kompatibilan s OpenAI-jem",
+  "dialog.model.unpaid.viewMoreProviders": "Pogledajte još 70+ pružalaca",
+  "session.header.reveal.finder": "Prikaži u Finderu",
+  "session.header.reveal.fileExplorer": "Prikaži u File Exploreru",
+  "session.header.reveal.containingFolder": "Otvori mapu koja sadrži datoteku",
   "command.category.suggested": "Predloženo",
   "command.category.view": "Prikaz",
   "command.category.project": "Projekat",

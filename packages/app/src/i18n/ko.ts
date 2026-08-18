@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "사용자 지정 OpenAI 호환 제공자",
+  "dialog.model.unpaid.viewMoreProviders": "70개 이상의 추가 제공자 보기",
+  "session.header.reveal.finder": "Finder에서 보기",
+  "session.header.reveal.fileExplorer": "파일 탐색기에서 보기",
+  "session.header.reveal.containingFolder": "포함된 폴더 열기",
   "command.category.suggested": "추천",
   "command.category.view": "보기",
   "command.category.project": "프로젝트",

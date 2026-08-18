@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "موفر مخصص متوافق مع OpenAI",
+  "dialog.model.unpaid.viewMoreProviders": "عرض أكثر من 70 موفرًا إضافيًا",
+  "session.header.reveal.finder": "إظهار في Finder",
+  "session.header.reveal.fileExplorer": "إظهار في مستكشف الملفات",
+  "session.header.reveal.containingFolder": "فتح المجلد المحتوي",
   "command.category.suggested": "مقترح",
   "command.category.view": "عرض",
   "command.category.project": "مشروع",

@@ -2,6 +2,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "dialog.provider.custom.label": "Egendefinert OpenAI-kompatibel leverandør",
+  "dialog.model.unpaid.viewMoreProviders": "Se over 70 flere leverandører",
+  "session.header.reveal.finder": "Vis i Finder",
+  "session.header.reveal.fileExplorer": "Vis i Filutforsker",
+  "session.header.reveal.containingFolder": "Åpne mappen som inneholder filen",
   "command.category.suggested": "Foreslått",
   "command.category.view": "Visning",
   "command.category.project": "Prosjekt",

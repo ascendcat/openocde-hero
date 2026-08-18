@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "Пользовательский провайдер, совместимый с OpenAI",
+  "dialog.model.unpaid.viewMoreProviders": "Показать ещё более 70 провайдеров",
+  "session.header.reveal.finder": "Показать в Finder",
+  "session.header.reveal.fileExplorer": "Показать в Проводнике",
+  "session.header.reveal.containingFolder": "Открыть содержащую папку",
   "command.category.suggested": "Предложено",
   "command.category.view": "Просмотр",
   "command.category.project": "Проект",

@@ -3,6 +3,11 @@ import { dict as en } from "./en"
 type Keys = keyof typeof en
 
 export const dict = {
+  "dialog.provider.custom.label": "自定义 OpenAI 兼容提供商",
+  "dialog.model.unpaid.viewMoreProviders": "查看更多 70+ 提供商",
+  "session.header.reveal.finder": "在 Finder 中显示",
+  "session.header.reveal.fileExplorer": "在文件资源管理器中显示",
+  "session.header.reveal.containingFolder": "打开所在文件夹",
   "command.category.suggested": "建议",
   "command.category.view": "视图",
   "command.category.project": "项目",

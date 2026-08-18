@@ -1,4 +1,9 @@
 export const dict = {
+  "dialog.provider.custom.label": "Tilpasset OpenAI-kompatibel udbyder",
+  "dialog.model.unpaid.viewMoreProviders": "Se mere end 70 yderligere udbydere",
+  "session.header.reveal.finder": "Vis i Finder",
+  "session.header.reveal.fileExplorer": "Vis i Stifinder",
+  "session.header.reveal.containingFolder": "Åbn indeholdende mappe",
   "command.category.suggested": "Foreslået",
   "command.category.view": "Vis",
   "command.category.project": "Projekt",
