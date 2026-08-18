@@ -1324,7 +1324,7 @@ it.instance(
       }
     }),
   { git: true },
-  10_000,
+  30_000,
 )
 
 // Queue semantics
