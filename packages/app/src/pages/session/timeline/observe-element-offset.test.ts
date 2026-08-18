@@ -45,8 +45,7 @@ test("reports a divergent native offset once and ignores equal offsets and unrel
 
   route.remove()
   document.body.append(route)
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await frames(3)
+  await waitFor(() => calls.length === 1)
   expect(calls).toEqual([[0, false]])
 
   route.remove()
@@ -83,8 +82,7 @@ test("keeps checking until stale reset-delay callbacks can no longer win", async
 
   route.remove()
   document.body.append(route)
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await frames(1)
+  await waitFor(() => instance.scrollOffset === 0)
   expect(instance.scrollOffset).toBe(0)
 
   instance.scrollOffset = 79_400
@@ -125,8 +123,7 @@ test.each([
 
   route.remove()
   document.body.append(route)
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  await frames(3)
+  await waitFor(() => calls.length === 1)
 
   expect(calls).toEqual([[expected, false]])
   cleanup?.()
@@ -195,5 +192,13 @@ test("cleanup cancels reconnect checks and delegated offset observation", async 
 async function frames(count: number) {
   for (let index = 0; index < count; index++) {
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+  }
+}
+
+async function waitFor(predicate: () => boolean) {
+  const deadline = performance.now() + 1_000
+  while (!predicate()) {
+    if (performance.now() >= deadline) throw new Error("Timed out waiting for the offset observer")
+    await frames(1)
   }
 }
