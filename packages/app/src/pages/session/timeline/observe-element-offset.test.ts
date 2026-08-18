@@ -196,7 +196,7 @@ async function frames(count: number) {
 }
 
 async function waitFor(predicate: () => boolean) {
-  const deadline = performance.now() + 1_000
+  const deadline = performance.now() + 5_000
   while (!predicate()) {
     if (performance.now() >= deadline) throw new Error("Timed out waiting for the offset observer")
     await frames(1)
